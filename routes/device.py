@@ -53,7 +53,7 @@ def setup_device(device_id: int, setup_data: schemas.DeviceSetupData, db: Sessio
 
     # The IoT device will then return relevant operational data, which can be stored in the backend
     # For example, here we are not modifying the device_name, device_type, model, or version, just the `data` field
-    device.data = setup_data.data.dict(exclude_unset=True)
+    device.data = setup_data.device_data
     db.commit()
     db.refresh(device)
 
