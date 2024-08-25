@@ -44,6 +44,9 @@ class Device(DeviceBase):
 class DeviceSetupData(BaseModel):
     user_info: Dict
 
+    class Config:
+        from_attributes = True
+
 class DeviceSetup(BaseModel):
     data: DeviceSetupData
 

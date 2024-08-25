@@ -59,6 +59,17 @@ def setup_device(device_id: int, setup_data: schemas.DeviceSetup, db: Session = 
 
     return device
 
+@router.put("/{device_id}/data", response_model=schemas.Device)
+def update_device_data(device_id: int, data: schemas.DeviceSetupData, db: Session = Depends(database.get_db), current_user: schemas.User = Depends(auth.get_current_user)):
+    device = db.query(models.Device).filter(models.Device.id == device_id, models.Device.owner_id == current_user.id).first()
+    if not device:
+        raise HTTPException(status_code=404, detail="Device not found")
 
+    # Update the device's data field
+    device.data = {**device.data, **data.dict(exclude_unset=True)} if device.data else data.dict(exclude_unset=True)
+    db.commit()
+    db.refresh(device)
+    
+    return device
 
 
