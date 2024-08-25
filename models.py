@@ -17,10 +17,11 @@ class Device(Base):
     
     id = Column(Integer, primary_key=True, index=True)
     device_name = Column(String, index=True)
-    device_type = Column(String)  # New field to specify the type of device
+    device_type = Column(String)
     model = Column(String)
     version = Column(String)
-    data = Column(JSON)  # JSON column to store device-specific data
+    mode = Column(String)  # Mode is now a top-level field in the model
+    data = Column(JSON)  # This will store the device_data part as JSON
     owner_id = Column(Integer, ForeignKey("users.id"))
     
     owner = relationship("User", back_populates="devices")

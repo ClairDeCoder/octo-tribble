@@ -39,8 +39,8 @@ def get_device(device_id: int, db: Session = Depends(database.get_db), current_u
         raise HTTPException(status_code=404, detail="Device not found")
     return device
 
-@router.post("/{device_id}/setup", response_model=schemas.Device)
-def setup_device(device_id: int, setup_data: schemas.DeviceSetup, db: Session = Depends(database.get_db), current_user: schemas.User = Depends(auth.get_current_user)):
+@router.post("/{device_id}/setup", response_model=schemas.Device, operation_id="setup_device")
+def setup_device(device_id: int, setup_data: schemas.DeviceSetupData, db: Session = Depends(database.get_db), current_user: schemas.User = Depends(auth.get_current_user)):
     device = db.query(models.Device).filter(models.Device.id == device_id, models.Device.owner_id == current_user.id).first()
     if not device:
         raise HTTPException(status_code=404, detail="Device not found")
@@ -59,14 +59,15 @@ def setup_device(device_id: int, setup_data: schemas.DeviceSetup, db: Session = 
 
     return device
 
-@router.put("/{device_id}/data", response_model=schemas.Device)
-def update_device_data(device_id: int, data: schemas.DeviceSetupData, db: Session = Depends(database.get_db), current_user: schemas.User = Depends(auth.get_current_user)):
+@router.put("/{device_id}/data", response_model=schemas.Device, operation_id="update_device_data")
+def update_device_data(device_id: int, data: schemas.DeviceDataUpdate, db: Session = Depends(database.get_db), current_user: schemas.User = Depends(auth.get_current_user)):
     device = db.query(models.Device).filter(models.Device.id == device_id, models.Device.owner_id == current_user.id).first()
     if not device:
         raise HTTPException(status_code=404, detail="Device not found")
 
-    # Update the device's data field
-    device.data = {**device.data, **data.dict(exclude_unset=True)} if device.data else data.dict(exclude_unset=True)
+    # Update the device's data field and mode
+    device.data = {**device.data, **data.device_data.dict(exclude_unset=True)} if device.data else data.device_data.dict(exclude_unset=True)
+#    device.mode = data.mode  # Update the mode at the top level
     db.commit()
     db.refresh(device)
     

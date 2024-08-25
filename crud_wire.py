@@ -44,7 +44,7 @@ def create_update(db: Session, update: models_schema.UpdateCreate):
     db.refresh(db_update)
     return db_update
 
-def update_device_data(db: Session, device_id: int, user_info: dict, dev_info: dict):
+def update_device_data(db: Session, device_id: int, device_data: dict, dev_info: dict):
     device = db.query(models.Device).filter(models.Device.id == device_id).first()
     if device:
         # Assuming device.data is a JSON column and is a dictionary
@@ -52,7 +52,7 @@ def update_device_data(db: Session, device_id: int, user_info: dict, dev_info: d
             device.data = {}
 
         # Update or add the sub-arrays
-        device.data['user_info'] = user_info
+        device.data['device_data'] = device_data
         device.data['dev_info'] = dev_info
 
         db.commit()

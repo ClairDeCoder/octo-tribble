@@ -42,17 +42,16 @@ class Device(DeviceBase):
         from_attributes = True
 
 class DeviceSetupData(BaseModel):
-    user_info: Dict
+    device_data: Dict
 
     class Config:
         from_attributes = True
 
-class DeviceSetup(BaseModel):
-    data: DeviceSetupData
+class DeviceDataUpdate(BaseModel):
+    device_data: DeviceSetupData
 
     class Config:
         from_attributes = True
-
 
 class UpdateBase(BaseModel):
     version: str
